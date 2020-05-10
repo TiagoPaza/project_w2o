@@ -1,0 +1,100 @@
+{
+  "asset": "asset:project_w2o/lib/di/modules/local_module.dart",
+  "summary": {
+    "injector": [],
+    "module": [
+      {
+        "name": "LocalModule",
+        "providers": [
+          {
+            "name": "provideDio",
+            "kind": "method",
+            "injectedType": {
+              "lookupKey": {
+                "root": "asset:dio/lib/src/dio.dart#Dio",
+                "qualifier": null
+              },
+              "isProvider": false
+            },
+            "singleton": true,
+            "asynchronous": false,
+            "dependencies": [
+              {
+                "lookupKey": {
+                  "root": "asset:project_w2o/lib/data/sharedpref/shared_preference_helper.dart#SharedPreferenceHelper",
+                  "qualifier": null
+                },
+                "isProvider": false
+              }
+            ]
+          },
+          {
+            "name": "provideSharedPreferences",
+            "kind": "method",
+            "injectedType": {
+              "lookupKey": {
+                "root": "asset:shared_preferences/lib/shared_preferences.dart#SharedPreferences",
+                "qualifier": null
+              },
+              "isProvider": false
+            },
+            "singleton": true,
+            "asynchronous": true,
+            "dependencies": []
+          },
+          {
+            "name": "provideSharedPreferenceHelper",
+            "kind": "method",
+            "injectedType": {
+              "lookupKey": {
+                "root": "asset:project_w2o/lib/data/sharedpref/shared_preference_helper.dart#SharedPreferenceHelper",
+                "qualifier": null
+              },
+              "isProvider": false
+            },
+            "singleton": true,
+            "asynchronous": false,
+            "dependencies": []
+          },
+          {
+            "name": "provideDatabase",
+            "kind": "method",
+            "injectedType": {
+              "lookupKey": {
+                "root": "asset:sembast/lib/src/api/v2/database.dart#Database",
+                "qualifier": null
+              },
+              "isProvider": false
+            },
+            "singleton": true,
+            "asynchronous": true,
+            "dependencies": []
+          },
+          {
+            "name": "provideRepository",
+            "kind": "method",
+            "injectedType": {
+              "lookupKey": {
+                "root": "asset:project_w2o/lib/data/repository.dart#Repository",
+                "qualifier": null
+              },
+              "isProvider": false
+            },
+            "singleton": true,
+            "asynchronous": false,
+            "dependencies": [
+              {
+                "lookupKey": {
+                  "root": "asset:project_w2o/lib/data/sharedpref/shared_preference_helper.dart#SharedPreferenceHelper",
+                  "qualifier": null
+                },
+                "isProvider": false
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "injectable": []
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "options": {
+    "pasta": {
+      "name": "Integral",
+      "price": 3.20
+    },
+    "flavor": [
+      {
+        "name": "4 Cheeses",
+        "price": 2.00
+      },
+      {
+        "nome": "Pepperoni",
+        "price": 4.65
+      }
+    ],
+    "sauce": [
+      {
+        "nome": "Bechamel",
+        "valor": 5.80
+      }
+    ]
+  }
+}

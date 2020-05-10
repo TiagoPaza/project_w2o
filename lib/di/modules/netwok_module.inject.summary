@@ -1,0 +1,64 @@
+{
+  "asset": "asset:project_w2o/lib/di/modules/netwok_module.dart",
+  "summary": {
+    "injector": [],
+    "module": [
+      {
+        "name": "NetworkModule",
+        "providers": [
+          {
+            "name": "provideSharedPreferences",
+            "kind": "method",
+            "injectedType": {
+              "lookupKey": {
+                "root": "asset:shared_preferences/lib/shared_preferences.dart#SharedPreferences",
+                "qualifier": null
+              },
+              "isProvider": false
+            },
+            "singleton": true,
+            "asynchronous": true,
+            "dependencies": []
+          },
+          {
+            "name": "provideSharedPreferenceHelper",
+            "kind": "method",
+            "injectedType": {
+              "lookupKey": {
+                "root": "asset:project_w2o/lib/data/sharedpref/shared_preference_helper.dart#SharedPreferenceHelper",
+                "qualifier": null
+              },
+              "isProvider": false
+            },
+            "singleton": true,
+            "asynchronous": false,
+            "dependencies": []
+          },
+          {
+            "name": "provideDio",
+            "kind": "method",
+            "injectedType": {
+              "lookupKey": {
+                "root": "asset:dio/lib/src/dio.dart#Dio",
+                "qualifier": null
+              },
+              "isProvider": false
+            },
+            "singleton": true,
+            "asynchronous": false,
+            "dependencies": [
+              {
+                "lookupKey": {
+                  "root": "asset:project_w2o/lib/data/sharedpref/shared_preference_helper.dart#SharedPreferenceHelper",
+                  "qualifier": null
+                },
+                "isProvider": false
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "injectable": []
+  }
+}

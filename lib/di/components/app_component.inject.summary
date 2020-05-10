@@ -1,0 +1,46 @@
+{
+  "asset": "asset:project_w2o/lib/di/components/app_component.dart",
+  "summary": {
+    "injector": [
+      {
+        "name": "AppComponent",
+        "providers": [
+          {
+            "name": "app",
+            "kind": "getter",
+            "injectedType": {
+              "lookupKey": {
+                "root": "asset:project_w2o/lib/main.dart#MyApp",
+                "qualifier": null
+              },
+              "isProvider": false
+            },
+            "singleton": false,
+            "asynchronous": false,
+            "dependencies": []
+          },
+          {
+            "name": "getRepository",
+            "kind": "method",
+            "injectedType": {
+              "lookupKey": {
+                "root": "asset:project_w2o/lib/data/repository.dart#Repository",
+                "qualifier": null
+              },
+              "isProvider": false
+            },
+            "singleton": false,
+            "asynchronous": false,
+            "dependencies": []
+          }
+        ],
+        "modules": [
+          "asset:project_w2o/lib/di/modules/local_module.dart#LocalModule",
+          "asset:project_w2o/lib/di/modules/preference_module.dart#PreferenceModule"
+        ]
+      }
+    ],
+    "module": [],
+    "injectable": []
+  }
+}
