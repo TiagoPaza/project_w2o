@@ -99,6 +99,57 @@ mixin _$FormStore on _FormStore, Store {
     }, _$descriptionItemAtom, name: '${_$descriptionItemAtom.name}_set');
   }
 
+  final _$categoryItemAtom = Atom(name: '_FormStore.categoryItem');
+
+  @override
+  String get categoryItem {
+    _$categoryItemAtom.context.enforceReadPolicy(_$categoryItemAtom);
+    _$categoryItemAtom.reportObserved();
+    return super.categoryItem;
+  }
+
+  @override
+  set categoryItem(String value) {
+    _$categoryItemAtom.context.conditionallyRunInAction(() {
+      super.categoryItem = value;
+      _$categoryItemAtom.reportChanged();
+    }, _$categoryItemAtom, name: '${_$categoryItemAtom.name}_set');
+  }
+
+  final _$valueItemAtom = Atom(name: '_FormStore.valueItem');
+
+  @override
+  String get valueItem {
+    _$valueItemAtom.context.enforceReadPolicy(_$valueItemAtom);
+    _$valueItemAtom.reportObserved();
+    return super.valueItem;
+  }
+
+  @override
+  set valueItem(String value) {
+    _$valueItemAtom.context.conditionallyRunInAction(() {
+      super.valueItem = value;
+      _$valueItemAtom.reportChanged();
+    }, _$valueItemAtom, name: '${_$valueItemAtom.name}_set');
+  }
+
+  final _$dateItemAtom = Atom(name: '_FormStore.dateItem');
+
+  @override
+  String get dateItem {
+    _$dateItemAtom.context.enforceReadPolicy(_$dateItemAtom);
+    _$dateItemAtom.reportObserved();
+    return super.dateItem;
+  }
+
+  @override
+  set dateItem(String value) {
+    _$dateItemAtom.context.conditionallyRunInAction(() {
+      super.dateItem = value;
+      _$dateItemAtom.reportChanged();
+    }, _$dateItemAtom, name: '${_$dateItemAtom.name}_set');
+  }
+
   final _$successAtom = Atom(name: '_FormStore.success');
 
   @override
@@ -197,6 +248,36 @@ mixin _$FormStore on _FormStore, Store {
   }
 
   @override
+  void setCategoryItem(String value) {
+    final _$actionInfo = _$_FormStoreActionController.startAction();
+    try {
+      return super.setCategoryItem(value);
+    } finally {
+      _$_FormStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setValueItem(String value) {
+    final _$actionInfo = _$_FormStoreActionController.startAction();
+    try {
+      return super.setValueItem(value);
+    } finally {
+      _$_FormStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setDateItem(String value) {
+    final _$actionInfo = _$_FormStoreActionController.startAction();
+    try {
+      return super.setDateItem(value);
+    } finally {
+      _$_FormStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void validateUserEmail(String value) {
     final _$actionInfo = _$_FormStoreActionController.startAction();
     try {
@@ -231,6 +312,36 @@ mixin _$FormStore on _FormStore, Store {
     final _$actionInfo = _$_FormStoreActionController.startAction();
     try {
       return super.validateDescriptionItem(value);
+    } finally {
+      _$_FormStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void validateCategoryItem(String value) {
+    final _$actionInfo = _$_FormStoreActionController.startAction();
+    try {
+      return super.validateCategoryItem(value);
+    } finally {
+      _$_FormStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void validateValueItem(String value) {
+    final _$actionInfo = _$_FormStoreActionController.startAction();
+    try {
+      return super.validateValueItem(value);
+    } finally {
+      _$_FormStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void validateDateItem(String value) {
+    final _$actionInfo = _$_FormStoreActionController.startAction();
+    try {
+      return super.validateDateItem(value);
     } finally {
       _$_FormStoreActionController.endAction(_$actionInfo);
     }
@@ -329,5 +440,56 @@ mixin _$FormErrorStore on _FormErrorStore, Store {
       super.descriptionItem = value;
       _$descriptionItemAtom.reportChanged();
     }, _$descriptionItemAtom, name: '${_$descriptionItemAtom.name}_set');
+  }
+
+  final _$categoryItemAtom = Atom(name: '_FormErrorStore.categoryItem');
+
+  @override
+  String get categoryItem {
+    _$categoryItemAtom.context.enforceReadPolicy(_$categoryItemAtom);
+    _$categoryItemAtom.reportObserved();
+    return super.categoryItem;
+  }
+
+  @override
+  set categoryItem(String value) {
+    _$categoryItemAtom.context.conditionallyRunInAction(() {
+      super.categoryItem = value;
+      _$categoryItemAtom.reportChanged();
+    }, _$categoryItemAtom, name: '${_$categoryItemAtom.name}_set');
+  }
+
+  final _$valueItemAtom = Atom(name: '_FormErrorStore.valueItem');
+
+  @override
+  String get valueItem {
+    _$valueItemAtom.context.enforceReadPolicy(_$valueItemAtom);
+    _$valueItemAtom.reportObserved();
+    return super.valueItem;
+  }
+
+  @override
+  set valueItem(String value) {
+    _$valueItemAtom.context.conditionallyRunInAction(() {
+      super.valueItem = value;
+      _$valueItemAtom.reportChanged();
+    }, _$valueItemAtom, name: '${_$valueItemAtom.name}_set');
+  }
+
+  final _$dateItemAtom = Atom(name: '_FormErrorStore.dateItem');
+
+  @override
+  String get dateItem {
+    _$dateItemAtom.context.enforceReadPolicy(_$dateItemAtom);
+    _$dateItemAtom.reportObserved();
+    return super.dateItem;
+  }
+
+  @override
+  set dateItem(String value) {
+    _$dateItemAtom.context.conditionallyRunInAction(() {
+      super.dateItem = value;
+      _$dateItemAtom.reportChanged();
+    }, _$dateItemAtom, name: '${_$dateItemAtom.name}_set');
   }
 }

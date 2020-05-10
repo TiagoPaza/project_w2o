@@ -2,6 +2,7 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -14,6 +15,7 @@ import 'package:project_w2o/models/item_data/item_data.dart';
 import 'package:project_w2o/models/item_data/item_data_list.dart';
 import 'package:project_w2o/routes.dart';
 import 'package:project_w2o/stores/form/form_store.dart';
+import 'package:project_w2o/utils/device/device_utils.dart';
 import 'package:project_w2o/widgets/progress_indicator_widget.dart';
 import 'package:project_w2o/widgets/textfield_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,28 +34,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   ItemDataList _items;
 
-  final _formKey = GlobalKey<FormState>();
   final LocalAuthentication auth = LocalAuthentication();
 
-  bool _canCheckBiometrics;
   List<BiometricType> _availableBiometrics;
 
   String dropdownValue = 'Selecione uma opção';
   DateTime selectedDate = DateTime.now();
 
-  final GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
-
   TextEditingController _nameItemController = TextEditingController();
   TextEditingController _descriptionItemController = TextEditingController();
+  TextEditingController _categoryItemController = TextEditingController();
   MoneyMaskedTextController _valueItemController =
       MoneyMaskedTextController(decimalSeparator: ',', thousandSeparator: '.');
   TextEditingController _dateItemController = new TextEditingController();
 
-  FocusNode _descriptionFocusNode;
-
-  final _store = FormStore();
-
-  String _categoryItemName = '';
+  final GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
+  final _formStore = FormStore();
+  final _formKey = new GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -113,58 +110,61 @@ class _HomeScreenState extends State<HomeScreen> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
-                      content: Stack(
-                        overflow: Overflow.visible,
-                        children: <Widget>[
-                          Positioned(
-                            right: -40.0,
-                            top: -40.0,
-                            child: InkResponse(
-                              onTap: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: CircleAvatar(
-                                child: Icon(Icons.close),
-                                backgroundColor: Colors.red,
+                    return Form(
+                      key: _formKey,
+                      child: AlertDialog(
+                        content: Stack(
+                          overflow: Overflow.visible,
+                          children: <Widget>[
+                            Positioned(
+                              right: -40.0,
+                              top: -40.0,
+                              child: InkResponse(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: CircleAvatar(
+                                  child: Icon(Icons.close),
+                                  backgroundColor: Colors.red,
+                                ),
                               ),
                             ),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              _buildNameItemField(),
-                              SizedBox(height: 20.0),
-                              _buildDescriptionItemField(),
-                              SizedBox(height: 20.0),
-                              _buildCategoryItemField(),
-                              SizedBox(height: 20.0),
-                              _buildValueItemField(),
-                              SizedBox(height: 20.0),
-                              GestureDetector(
-                                onTap: () => _selectDate(context),
-                                child: AbsorbPointer(
-                                  child: TextFormField(
-                                    controller: _dateItemController,
-                                    keyboardType: TextInputType.datetime,
-                                    decoration: InputDecoration(
-                                      hintText: 'Data',
-                                    ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                _buildNameItemField(),
+                                SizedBox(height: 20.0),
+                                _buildDescriptionItemField(),
+                                SizedBox(height: 20.0),
+                                _buildCategoryItemField(context),
+                                SizedBox(height: 20.0),
+                                _buildValueItemField(),
+                                SizedBox(height: 20.0),
+                                GestureDetector(
+                                  onTap: () => _selectDate(context),
+                                  child: AbsorbPointer(
+                                    child: _buildDateItemField(),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: RaisedButton(
-                                  child: Text("Salvar"),
-                                  onPressed: () {
-                                    print(_nameItemController.text);
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
+                                Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: RaisedButton(
+                                    child: Text("Salvar"),
+                                    onPressed: () {
+                                      _submitForm(
+                                        _formStore.nameItem,
+                                        _formStore.descriptionItem,
+                                        _formStore.categoryItem,
+                                        _formStore.valueItem,
+                                        _dateItemController.text,
+                                      );
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -179,44 +179,6 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
       ),
-    );
-  }
-
-  DropDownFormField _buildCategoryItemField() {
-    return DropDownFormField(
-      titleText: 'Selecione a categoria',
-      hintText: '',
-      value: _categoryItemName,
-      onSaved: (value) {
-        setState(() {
-          _categoryItemName = value;
-        });
-      },
-      onChanged: (value) {
-        setState(() {
-          _categoryItemName = value;
-        });
-      },
-      dataSource: [
-        {
-          "display": "Entrada",
-          "value": "Entrada",
-        },
-        {
-          "display": "Saída",
-          "value": "Saída",
-        },
-        {
-          "display": "Transferência",
-          "value": "Transferência",
-        },
-        {
-          "display": "Outros",
-          "value": "Outros",
-        },
-      ],
-      textField: "display",
-      valueField: "value",
     );
   }
 
@@ -316,8 +278,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               if (startDatePicked != null) {
                                 setState(() {
                                   startDate = startDatePicked;
-                                  _dateItemController.value =
-                                      TextEditingValue(text: startDatePicked.toString());
                                 });
                               }
 
@@ -329,8 +289,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               if (endDatePicked != null) {
                                 setState(() {
                                   endDate = endDatePicked;
-                                  _dateItemController.value =
-                                      TextEditingValue(text: endDatePicked.toString());
                                 });
                               }
 
@@ -366,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               var response =
                                   await FlutterShareMe().shareToWhatsApp(msg: itemDataModel.name);
                               if (response == 'success') {
-                                print('navigate success');
+                                print('SUCCESS ON SHARE ITEM');
                               }
                             },
                           ),
@@ -397,6 +355,13 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Text("Continuar"),
       onPressed: () {
         _deleteRequestAPI(id);
+//        if (status == "success") {
+//          _showSuccessMessage("O item foi removido.");
+//        } else {
+//          _showErrorMessage("Ops! Houve um erro ao remover o item.");
+//        }
+
+        Navigator.of(context).pop();
       },
     );
   }
@@ -424,9 +389,10 @@ class _HomeScreenState extends State<HomeScreen> {
           textController: _nameItemController,
           inputAction: TextInputAction.next,
           onChanged: (value) {
-            _store.setNameItem(_nameItemController.text);
+            _formStore.setNameItem(_nameItemController.text);
           },
-          errorText: _store.formErrorStore.user,
+          hintColor: Colors.grey,
+          errorText: _formStore.formErrorStore.nameItem,
         );
       },
     );
@@ -438,35 +404,112 @@ class _HomeScreenState extends State<HomeScreen> {
         return TextFieldWidget(
           hint: "Descrição",
           isIcon: false,
-          inputType: TextInputType.text,
+          inputType: TextInputType.multiline,
           textController: _descriptionItemController,
           inputAction: TextInputAction.next,
           onChanged: (value) {
-            _store.setDescriptionItem(_descriptionItemController.text);
+            _formStore.setDescriptionItem(_descriptionItemController.text);
           },
-          errorText: _store.formErrorStore.user,
+          hintColor: Colors.grey,
+          errorText: _formStore.formErrorStore.descriptionItem,
         );
       },
     );
   }
 
-  Widget _buildValueItemField() {
-    return Observer(
-      builder: (context) {
-        return TextFieldWidget(
-          hint: "Valor",
-          isIcon: false,
-          inputType: TextInputType.number,
-          textController: _valueItemController,
-          inputAction: TextInputAction.next,
-          onChanged: (value) {
-            print(_valueItemController.text);
-//            _store.setDescriptionItem(_valueItemController.text);
-          },
-//          errorText: _store.formErrorStore.user,
-        );
+  Widget _buildCategoryItemField(BuildContext context) {
+    return DropDownFormField(
+      titleText: 'Selecione a categoria',
+      hintText: '',
+      value: _categoryItemController.text,
+      onSaved: (value) {
+        setState(() {
+          _formStore.setCategoryItem(_categoryItemController.text);
+        });
       },
+      onChanged: (value) {
+        setState(() {
+          _formStore.setCategoryItem(_categoryItemController.text);
+        });
+      },
+      dataSource: [
+        {
+          "display": "Entrada",
+          "value": "Entrada",
+        },
+        {
+          "display": "Saída",
+          "value": "Saída",
+        },
+        {
+          "display": "Transferência",
+          "value": "Transferência",
+        },
+        {
+          "display": "Outros",
+          "value": "Outros",
+        },
+      ],
+      textField: "display",
+      valueField: "value",
     );
+  }
+
+  Widget _buildValueItemField() {
+    return TextFieldWidget(
+      hint: "Valor",
+      isIcon: false,
+      inputType: TextInputType.number,
+      textController: _valueItemController,
+      inputAction: TextInputAction.next,
+      onChanged: (value) {
+        _formStore.setValueItem(_valueItemController.text);
+      },
+      hintColor: Colors.grey,
+      errorText: _formStore.formErrorStore.valueItem,
+    );
+  }
+
+  Widget _buildDateItemField() {
+    return TextFieldWidget(
+      hint: "Data",
+      isIcon: false,
+      inputType: TextInputType.datetime,
+      textController: _dateItemController,
+      inputAction: TextInputAction.next,
+      onChanged: (value) {
+        _formStore.setDateItem(_dateItemController.text);
+      },
+      hintColor: Colors.grey,
+      errorText: _formStore.formErrorStore.dateItem,
+    );
+  }
+
+  void _submitForm(String name, String description, String category, String value, String date) {
+    SharedPreferences.getInstance().then((prefs) {
+      String hash = prefs.getString(Preferences.authToken);
+
+      if (hash != null) {
+        Map<String, dynamic> data = {
+          "hash": hash,
+          "nome": name,
+          "descricao": description,
+          "category": category,
+          "valor": value,
+          "data": date,
+        };
+
+        if (_formStore.canAddItem) {
+          DeviceUtils.hideKeyboard(context);
+
+          _postRequestAPI(data);
+        } else {
+          _showErrorMessage('Ops, preencha todos os campos!');
+        }
+
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   Future<void> _getItems() async {
@@ -485,10 +528,8 @@ class _HomeScreenState extends State<HomeScreen> {
           prefs.setBool(Preferences.isLoggedIn, false);
         });
 
-        Future.delayed(Duration(milliseconds: 0), () {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(Routes.login, (Route<dynamic> route) => false);
-        });
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(Routes.login, (Route<dynamic> route) => false);
       }
     });
   }
@@ -539,11 +580,14 @@ class _HomeScreenState extends State<HomeScreen> {
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
-        _dateItemController.value = TextEditingValue(text: picked.toString());
+
+        var parsedDate = DateFormat('dd/MM/yyyy').format(selectedDate);
+
+        _dateItemController.value = TextEditingValue(text: parsedDate.toString());
       });
   }
 
-  // REQUESTS TO API
+// REQUESTS TO API
   Future<void> _getRequestAPI() async {
     try {
       SharedPreferences.getInstance().then((prefs) async {
@@ -578,7 +622,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _postRequestAPI(Map data) async {
+  Future<void> _postRequestAPI(Map<String, dynamic> data) async {
     try {
       await Dio().post("$baseUrl/item/novo", queryParameters: data);
 
@@ -614,11 +658,10 @@ class _HomeScreenState extends State<HomeScreen> {
             connectivityResult == ConnectivityResult.wifi) {
           String castedId = id.toString();
 
-          await Dio().delete("$baseUrl/item/delete/$castedId", queryParameters: {"hash": hash});
+          await Dio().delete("$baseUrl/item/delete/$castedId", data: {"hash": hash});
 
           setState(() {
             print('REQUEST DELETE SUCCESS');
-
             _getRequestAPI();
           });
         }
@@ -638,5 +681,34 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     }
+  }
+
+  // General Methods:-----------------------------------------------------------
+  _showErrorMessage(String message) {
+    Future.delayed(Duration(milliseconds: 0), () {
+      if (message != null && message.isNotEmpty) {
+        FlushbarHelper.createError(
+          message: message,
+          title: "Ops! Houve um erro interno.",
+          duration: Duration(seconds: 3),
+        )..show(context);
+      }
+    });
+
+    return SizedBox.shrink();
+  }
+
+  _showSuccessMessage(String message) {
+    Future.delayed(Duration(milliseconds: 0), () {
+      if (message != null && message.isNotEmpty) {
+        FlushbarHelper.createSuccess(
+          message: message,
+          title: "Sucesso! Sua ação foi realizada.",
+          duration: Duration(seconds: 3),
+        )..show(context);
+      }
+    });
+
+    return SizedBox.shrink();
   }
 }

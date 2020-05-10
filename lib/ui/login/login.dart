@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   FocusNode _passwordFocusNode;
 
   final _formKey = GlobalKey<FormState>();
-  final _store = FormStore();
+  final _formStore = FormStore();
 
   @override
   void initState() {
@@ -52,15 +52,15 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Observer(
             builder: (context) {
-              return _store.success
+              return _formStore.success
                   ? navigate(context)
-                  : _showErrorMessage(_store.errorStore.errorMessage);
+                  : _showErrorMessage(_formStore.errorStore.errorMessage);
             },
           ),
           Observer(
             builder: (context) {
               return Visibility(
-                visible: _store.loading,
+                visible: _formStore.loading,
                 child: ProgressIndicatorWidget(),
               );
             },
@@ -105,12 +105,12 @@ class _LoginScreenState extends State<LoginScreen> {
           textController: _userController,
           inputAction: TextInputAction.next,
           onChanged: (value) {
-            _store.setUserId(_userController.text);
+            _formStore.setUserId(_userController.text);
           },
           onFieldSubmitted: (value) {
             FocusScope.of(context).requestFocus(_passwordFocusNode);
           },
-          errorText: _store.formErrorStore.user,
+          errorText: _formStore.formErrorStore.user,
         );
       },
     );
@@ -127,9 +127,9 @@ class _LoginScreenState extends State<LoginScreen> {
           iconColor: Colors.black54,
           textController: _passwordController,
           focusNode: _passwordFocusNode,
-          errorText: _store.formErrorStore.password,
+          errorText: _formStore.formErrorStore.password,
           onChanged: (value) {
-            _store.setPassword(_passwordController.text);
+            _formStore.setPassword(_passwordController.text);
           },
         );
       },
@@ -156,9 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
       buttonColor: Colors.blue,
       textColor: Colors.white,
       onPressed: () async {
-        if (_store.canLogin) {
+        if (_formStore.canLogin) {
           DeviceUtils.hideKeyboard(context);
-          _store.login();
+          _formStore.login();
         } else {
           _showErrorMessage('Ops, preencha todos os campos!');
         }
@@ -172,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     Future.delayed(Duration(milliseconds: 0), () {
-      Navigator.of(context).pushNamedAndRemoveUntil(Routes.home, (Route<dynamic> route) => false);
+      Navigator.of(context).pushNamedAndRemoveUntil(Routes.base, (Route<dynamic> route) => false);
     });
 
     return Container();

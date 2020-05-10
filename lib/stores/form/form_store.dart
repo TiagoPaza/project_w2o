@@ -28,6 +28,9 @@ abstract class _FormStore with Store {
       reaction((_) => password, validatePassword),
       reaction((_) => nameItem, validateNameItem),
       reaction((_) => descriptionItem, validateDescriptionItem),
+      reaction((_) => categoryItem, validateCategoryItem),
+      reaction((_) => valueItem, validateValueItem),
+      reaction((_) => dateItem, validateDateItem),
     ];
   }
 
@@ -43,6 +46,15 @@ abstract class _FormStore with Store {
 
   @observable
   String descriptionItem = '';
+
+  @observable
+  String categoryItem = '';
+
+  @observable
+  String valueItem = '';
+
+  @observable
+  String dateItem = '';
 
   @observable
   bool success = false;
@@ -62,7 +74,12 @@ abstract class _FormStore with Store {
 
   @computed
   bool get canAddItem =>
-      !formErrorStore.hasErrorsInAddItem && nameItem.isNotEmpty && descriptionItem.isNotEmpty;
+      !formErrorStore.hasErrorsInAddItem &&
+      nameItem.isNotEmpty &&
+      descriptionItem.isNotEmpty &&
+      categoryItem.isNotEmpty &&
+      valueItem.isNotEmpty &&
+      dateItem.isNotEmpty;
 
   // actions:-------------------------------------------------------------------
   @action
@@ -86,6 +103,21 @@ abstract class _FormStore with Store {
   }
 
   @action
+  void setCategoryItem(String value) {
+    categoryItem = value;
+  }
+
+  @action
+  void setValueItem(String value) {
+    valueItem = value;
+  }
+
+  @action
+  void setDateItem(String value) {
+    dateItem = value;
+  }
+
+  @action
   void validateUserEmail(String value) {
     if (value.isEmpty) {
       formErrorStore.user = "O campo 'usuário' não pode estar vazio.";
@@ -106,18 +138,45 @@ abstract class _FormStore with Store {
   @action
   void validateNameItem(String value) {
     if (value.isEmpty) {
-      formErrorStore.password = "O campo 'nome' não pode estar vazio.";
+      formErrorStore.nameItem = "O campo 'nome' não pode estar vazio.";
     } else {
-      formErrorStore.password = null;
+      formErrorStore.nameItem = null;
     }
   }
 
   @action
   void validateDescriptionItem(String value) {
     if (value.isEmpty) {
-      formErrorStore.password = "O campo 'descrição' não pode estar vazio.";
+      formErrorStore.descriptionItem = "O campo 'descrição' não pode estar vazio.";
     } else {
-      formErrorStore.password = null;
+      formErrorStore.descriptionItem = null;
+    }
+  }
+
+  @action
+  void validateCategoryItem(String value) {
+    if (value.isEmpty) {
+      formErrorStore.categoryItem = "O campo 'categoria' não pode estar vazio.";
+    } else {
+      formErrorStore.categoryItem = null;
+    }
+  }
+
+  @action
+  void validateValueItem(String value) {
+    if (value.isEmpty) {
+      formErrorStore.valueItem = "O campo 'valor' não pode estar vazio.";
+    } else {
+      formErrorStore.valueItem = null;
+    }
+  }
+
+  @action
+  void validateDateItem(String value) {
+    if (value.isEmpty) {
+      formErrorStore.valueItem = "O campo 'data' não pode estar vazio.";
+    } else {
+      formErrorStore.valueItem = null;
     }
   }
 
@@ -169,6 +228,12 @@ abstract class _FormStore with Store {
   void validateAll() {
     validatePassword(password);
     validateUserEmail(user);
+
+    validateNameItem(nameItem);
+    validateDescriptionItem(descriptionItem);
+    validateCategoryItem(categoryItem);
+    validateValueItem(valueItem);
+    validateDateItem(dateItem);
   }
 }
 
@@ -187,6 +252,15 @@ abstract class _FormErrorStore with Store {
   @observable
   String descriptionItem = '';
 
+  @observable
+  String categoryItem = '';
+
+  @observable
+  String valueItem = '';
+
+  @observable
+  String dateItem = '';
+
   @computed
   bool get hasErrorsInLogin => user != null || password != null;
 
@@ -197,5 +271,10 @@ abstract class _FormErrorStore with Store {
   bool get hasErrorInForgotPassword => user != null;
 
   @computed
-  bool get hasErrorsInAddItem => nameItem != null || descriptionItem != null;
+  bool get hasErrorsInAddItem =>
+      nameItem != null ||
+      descriptionItem != null ||
+      categoryItem != null ||
+      valueItem != null ||
+      dateItem != null;
 }

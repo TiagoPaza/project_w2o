@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:project_w2o/data/sharedpref/constants/preferences.dart';
 import 'package:project_w2o/routes.dart';
 import 'package:project_w2o/widgets/app_icon_widget.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,22 +21,27 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Center(child: AppIconWidget(image: 'assets/icons/ic_appicon.png')),
+      child: Center(child: AppIconWidget(image: 'assets/images/logo-w2o.png')),
     );
   }
 
   startTimer() {
-    var _duration = Duration(milliseconds: 5000);
+    var _duration = Duration(milliseconds: 3000);
     return Timer(_duration, navigate);
   }
 
   navigate() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+    SharedPreferences.getInstance().then((prefs) {
+      String hash = prefs.getString(Preferences.authToken);
+      if (hash != null) {
+        Navigator.of(context).pushReplacementNamed(Routes.base);
+      } else {
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setBool(Preferences.isLoggedIn, false);
+        });
 
-    if (preferences.getBool(Preferences.isLoggedIn) ?? false) {
-      Navigator.of(context).pushReplacementNamed(Routes.home);
-    } else {
-      Navigator.of(context).pushReplacementNamed(Routes.login);
-    }
+        Navigator.of(context).pushReplacementNamed(Routes.login);
+      }
+    });
   }
 }

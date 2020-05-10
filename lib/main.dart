@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
             title: Strings.appName,
             theme: _themeStore.darkMode ? themeDataDark : themeData,
             routes: Routes.routes,
+            initialRoute: Routes.splash,
             localizationsDelegates: [
               // A class which loads the translations from JSON files
               AppLocalizations.delegate,
